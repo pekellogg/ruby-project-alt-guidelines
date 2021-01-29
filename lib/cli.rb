@@ -1,18 +1,31 @@
-
+# Olive Yew
+# Consumer.create(:user_id == @@user_id)
 require 'pry'
 class CommandLineInterface
 
-    # greet user
+    @@user_id = ""
+
+    # greet user, login, create account if new
     def greet
         puts 'Welcome to Cat Content Consortium!'
-        puts "Login or create account? You should probably make an account if it's your first time here, you'll want to come back. Heh."
-        
+        puts "Type your name to get started."
+        input = gets.chomp
+        Consumer.all.each do |consumers|
+            if consumers.name == input
+                @@user_id = consumers.id
+                puts "Looks like this ain't your first rodeo!"
+                puts
+                display_titles
+            end
+        end
+        Consumer.create(:name == input)
+        display_titles
         # puts "Please select a title to view comments."
         # display_titles
     end
     
     # display titles to select from
-    def display_titles
+    def display_titles(user_id)
         Content.all.each do |content|
             puts "Title: #{content.title}"
             puts "Rated #{content.rating}/10 by Other Users"
@@ -24,7 +37,7 @@ class CommandLineInterface
     end
 
     # get user input and return comments
-    def receive_input
+    def receive_input(user_id)
         input = gets.chomp
         if input
             fetch_comments(input)
@@ -64,12 +77,4 @@ class CommandLineInterface
     end
 
 end
-
-
-# create_table :comments do |t|
-#     t.date :date
-#     t.string :text # chose string vs. text datatype due to 255 char limit
-#     t.integer :user_id
-#     t.integer :content_id
-#   end
   
